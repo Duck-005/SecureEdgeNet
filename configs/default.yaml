@@ -55,6 +55,12 @@ ensemble:
   tune_threshold: true
   threshold_metric: f1
 
+cross_validation:
+  enabled: false
+  n_splits: 5
+  shuffle: true
+  save_fold_artifacts: true
+
 paths:
   checkpoints_dir: ./checkpoints
   reports_dir: ./checkpoints/reports

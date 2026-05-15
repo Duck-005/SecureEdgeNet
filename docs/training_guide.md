@@ -40,6 +40,26 @@ For environments where Flower simulation dependencies are unavailable:
 python main.py --no-flower
 ```
 
+## Cross-Validation
+
+For stratified k-fold cross-validation:
+
+```bash
+python main.py --cross-validate --no-flower
+```
+
+For a smaller Colab run:
+
+```bash
+python main.py --cross-validate --folds 3 --no-flower
+```
+
+The pipeline fits preprocessing separately inside each fold, uses client validation partitions for threshold tuning, and reports fold test metrics in:
+
+```text
+checkpoints/cross_validation_metrics.json
+```
+
 ## 5. Inspect Results
 
 Open:

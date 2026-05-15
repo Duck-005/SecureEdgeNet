@@ -84,6 +84,36 @@ If you want a pure in-process FedAvg fallback without Flower simulation:
 python main.py --no-flower
 ```
 
+## K-Fold Cross-Validation
+
+Run stratified k-fold cross-validation with:
+
+```bash
+python main.py --cross-validate --no-flower
+```
+
+Override the number of folds:
+
+```bash
+python main.py --cross-validate --folds 3 --no-flower
+```
+
+Cross-validation fits a fresh preprocessor inside every fold, trains federated clients on the fold training split, tunes the ensemble threshold on client validation partitions, and evaluates on that fold's held-out test split. Results are saved to:
+
+```text
+checkpoints/cross_validation_metrics.json
+checkpoints/folds/fold_*/
+checkpoints/reports/folds/fold_*/
+```
+
+You can also enable it from `configs/default.yaml`:
+
+```yaml
+cross_validation:
+  enabled: true
+  n_splits: 5
+```
+
 Outputs are written to `./checkpoints/`:
 
 - `logistic_regression.joblib`
@@ -176,6 +206,8 @@ Most behavior is controlled by `configs/default.yaml`:
 - `ensemble.weights`
 - `ensemble.threshold`
 - `ensemble.tune_threshold`
+- `cross_validation.enabled`
+- `cross_validation.n_splits`
 
 Default ensemble:
 

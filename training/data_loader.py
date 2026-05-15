@@ -81,19 +81,13 @@ def partition_client_arrays(
     return partitions
 
 
-def prepare_data(config) -> tuple[list[dict[str, np.ndarray]], dict[str, np.ndarray], FraudPreprocessor, list[str], Path]:
-    frame, label_column, dataset_path = load_dataset(
-        config.data.data_dir,
-        config.data.label_column,
-        config.data.max_rows,
-    )
-    train_frame, test_frame = split_dataset(
-        frame,
-        label_column,
-        test_size=float(config.data.test_size),
-        seed=int(config.project.seed),
-    )
-
+def prepare_frames(
+    config,
+    train_frame: pd.DataFrame,
+    test_frame: pd.DataFrame,
+    label_column: str,
+    seed: int,
+) -> tuple[list[dict[str, np.ndarray]], dict[str, np.ndarray], FraudPreprocessor, list[str]]:
     preprocessor = FraudPreprocessor(
         label_column=label_column,
         missing_numeric=config.preprocessing.missing_numeric,
@@ -108,7 +102,30 @@ def prepare_data(config) -> tuple[list[dict[str, np.ndarray]], dict[str, np.ndar
         train_prepared.y,
         num_clients=int(config.federated.num_clients),
         validation_size=float(config.data.validation_size),
-        seed=int(config.project.seed),
+        seed=seed,
     )
     test = {"x": test_prepared.X, "y": test_prepared.y}
-    return clients, test, preprocessor, train_prepared.feature_names, dataset_path
+    return clients, test, preprocessor, train_prepared.feature_names
+
+
+def prepare_data(config) -> tuple[list[dict[str, np.ndarray]], dict[str, np.ndarray], FraudPreprocessor, list[str], Path]:
+    frame, label_column, dataset_path = load_dataset(
+        config.data.data_dir,
+        config.data.label_column,
+        config.data.max_rows,
+    )
+    train_frame, test_frame = split_dataset(
+        frame,
+        label_column,
+        test_size=float(config.data.test_size),
+        seed=int(config.project.seed),
+    )
+
+    clients, test, preprocessor, feature_names = prepare_frames(
+        config,
+        train_frame,
+        test_frame,
+        label_column,
+        seed=int(config.project.seed),
+    )
+    return clients, test, preprocessor, feature_names, dataset_path
