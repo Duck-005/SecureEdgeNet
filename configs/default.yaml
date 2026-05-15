@@ -1,0 +1,60 @@
+project:
+  name: SecureEdgeNet
+  seed: 42
+
+data:
+  data_dir: ./data
+  label_column: auto
+  test_size: 0.2
+  validation_size: 0.2
+  partition_strategy: stratified_iid
+  max_rows: null
+
+preprocessing:
+  missing_numeric: median
+  missing_categorical: most_frequent
+  scale_numeric: true
+  categorical_encoding: onehot
+  smote: false
+
+federated:
+  num_clients: 5
+  num_rounds: 3
+  local_epochs: 1
+  batch_size: 256
+  fraction_fit: 1.0
+  fraction_evaluate: 1.0
+  min_fit_clients: 2
+  min_evaluate_clients: 2
+  min_available_clients: 2
+  use_flower: true
+
+models:
+  logistic:
+    alpha: 0.0001
+  mlp:
+    hidden_layers: [64, 32]
+    dropout: 0.2
+    batch_norm: false
+    learning_rate: 0.001
+  xgboost:
+    n_estimators: 150
+    max_depth: 4
+    learning_rate: 0.08
+    subsample: 0.9
+    colsample_bytree: 0.9
+    tree_method: hist
+
+ensemble:
+  method: weighted_average
+  weights:
+    logistic: 0.3
+    mlp: 0.3
+    xgboost: 0.4
+  threshold: 0.5
+  tune_threshold: true
+  threshold_metric: f1
+
+paths:
+  checkpoints_dir: ./checkpoints
+  reports_dir: ./checkpoints/reports
