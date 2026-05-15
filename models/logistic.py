@@ -53,12 +53,15 @@ class FederatedLogisticRegression:
     def fit(self, X: np.ndarray, y: np.ndarray, epochs: int = 1) -> None:
         if not self._initialized:
             self.initialize()
+        X = np.asarray(X, dtype=np.float64)
+        y = np.asarray(y, dtype=np.int64)
         pos_weight = positive_class_weight(y)
-        sample_weight = np.where(y == 1, pos_weight, 1.0)
+        sample_weight = np.where(y == 1, pos_weight, 1.0).astype(np.float64)
         for _ in range(max(1, epochs)):
             self.model.partial_fit(X, y, classes=np.array([0, 1]), sample_weight=sample_weight)
 
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
+        X = np.asarray(X, dtype=np.float64)
         return self.model.predict_proba(X)[:, 1]
 
     def save(self, path: str | Path) -> None:
