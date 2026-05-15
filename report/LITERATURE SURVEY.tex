@@ -1,0 +1,268 @@
+\chapter{LITERATURE SURVEY}
+% Add details as per your project 
+\section{Introduction}
+The literature related to SecureEdgeNet spans four major research areas: automated fraud detection, imbalanced classification, Federated Learning, and explainable ensemble learning. Credit card fraud detection research establishes the importance of cost-sensitive and imbalance-aware evaluation. Explainable AI research supports the use of SHAP, feature importance, and confidence reporting in financial decision systems.
+
+This survey reviews twenty-five research papers in the same order in which they are cited in the final references section. Each work is summarized using the structure: contribution, relevance, findings, and limitation.
+
+\section{Related Works }
+%with the citation of the References }\\
+%Box et al.(1970)[1] Proposed the ARIMA model for time-series forecasting.
+%Relevance: Used as a baseline model in many air quality prediction studies.
+%Findings: Achieved moderate accuracy with small datasets but required careful feature engineering.
+%Limitation: Limited in handling non-linear patterns in data.
+%15 papers considered for the mini project
+\begin{enumerate}
+    \item \textbf{Phua C, Lee V, Smith-Miles K, and Gayler R (2010) \cite{ref1}}
+
+    Proposed a comprehensive survey of data mining based fraud detection research, covering fraud types, available evidence, and technical approaches across domains.
+
+    \textbf{Relevance:} This work establishes the broad fraud analytics context for SecureEdgeNet and motivates the use of machine learning for automated financial fraud detection.
+
+    \textbf{Findings:} The survey found that fraud detection systems must handle rare events, adversarial behaviour, changing patterns, and high business cost.
+
+    \textbf{Limitation:} The paper is a survey and does not provide a complete modern federated implementation or ensemble pipeline.
+
+    \item \textbf{Bhattacharyya S, Jha S, Tharakunnel K, and Westland JC (2011) \cite{ref2}}
+
+    Compared Logistic Regression, Support Vector Machines, and Random Forests for real credit card fraud detection.
+
+    \textbf{Relevance:} This study supports the inclusion of Logistic Regression as an interpretable baseline and tree-based models as strong fraud classifiers.
+
+    \textbf{Findings:} Tree-based and margin-based methods were competitive for credit card fraud detection, while Logistic Regression remained useful because of simplicity and interpretability.
+
+    \textbf{Limitation:} The study follows centralized learning and does not address privacy-preserving collaboration between institutions.
+
+    \item \textbf{Dal Pozzolo A, Caelen O, Johnson RA, and Bontempi G (2015) \cite{ref3}}
+
+    Studied probability calibration under undersampling for unbalanced classification, with application to credit card fraud detection.
+
+    \textbf{Relevance:} SecureEdgeNet uses probability outputs and threshold tuning; calibrated probabilities are therefore important for reliable fraud decisions.
+
+    \textbf{Findings:} Undersampling can preserve ranking performance but distort probability calibration, requiring correction when probabilities are used for decisions.
+
+    \textbf{Limitation:} The work focuses on centralized undersampling and does not include federated training.
+
+    \item \textbf{Bahnsen AC, Aouada D, Stojanovic A, and Ottersten B (2016) \cite{ref4}}
+
+    Proposed feature engineering strategies for credit card fraud detection and emphasized cost-sensitive evaluation.
+
+    \textbf{Relevance:} The project documentation discusses velocity features, merchant behaviour, and cost-sensitive thresholding based on this line of work.
+
+    \textbf{Findings:} Domain-aware feature engineering can significantly improve fraud detection compared with raw transaction fields alone.
+
+    \textbf{Limitation:} The paper depends on feature engineering and centralized training rather than federated client collaboration.
+
+    \item \textbf{Carcillo F, Le Borgne YA, Caelen O, and Bontempi G (2018) \cite{ref5}}
+
+    Assessed streaming active learning strategies for real-life credit card fraud detection.
+
+    \textbf{Relevance:} This work motivates the project's focus on fraud imbalance, non-stationarity, and practical evaluation instead of accuracy alone.
+
+    \textbf{Findings:} Real fraud detection is affected by delayed labels, class imbalance, and temporal distribution shift.
+
+    \textbf{Limitation:} The study targets active learning in streaming settings, while SecureEdgeNet focuses on federated ensemble training.
+
+    \item \textbf{Jurgovsky J, Granitzer M, Ziegler K, Calabretto S, Portier PE, He-Guelton LY, and Caelen O (2018) \cite{ref6}}
+
+    Investigated sequence classification for credit card fraud detection using transaction histories.
+
+    \textbf{Relevance:} The work demonstrates that fraud often depends on temporal and behavioural context, motivating future sequence modelling extensions.
+
+    \textbf{Findings:} Sequential models can exploit cardholder behaviour over time and improve detection beyond isolated transaction classification.
+
+    \textbf{Limitation:} The current SecureEdgeNet implementation uses tabular transaction features and does not yet include sequence neural networks.
+
+    \item \textbf{Chawla NV, Bowyer KW, Hall LO, and Kegelmeyer WP (2002) \cite{ref7}}
+
+    Introduced SMOTE, a synthetic minority oversampling technique for imbalanced classification.
+
+    \textbf{Relevance:} Fraud datasets are severely imbalanced, and SecureEdgeNet includes optional SMOTE support in the preprocessing design.
+
+    \textbf{Findings:} Synthetic oversampling can improve minority-class learning by generating new samples between existing minority examples.
+
+    \textbf{Limitation:} SMOTE can generate unrealistic fraud examples if the minority-class neighbourhood is noisy or sparse.
+
+    \item \textbf{He H and Garcia EA (2009) \cite{ref8}}
+
+    Presented a detailed review of learning from imbalanced data.
+
+    \textbf{Relevance:} This paper supports the project's use of class weighting, recall, PR-AUC, and threshold tuning.
+
+    \textbf{Findings:} Imbalanced datasets require specialized sampling, cost-sensitive learning, and evaluation strategies.
+
+    \textbf{Limitation:} The work predates modern Federated Learning and does not address distributed privacy-preserving training.
+
+    \item \textbf{Saito T and Rehmsmeier M (2015) \cite{ref9}}
+
+    Demonstrated that precision-recall plots are more informative than ROC plots for imbalanced binary classification.
+
+    \textbf{Relevance:} SecureEdgeNet reports PR-AUC alongside ROC-AUC because fraud is the minority class.
+
+    \textbf{Findings:} ROC curves can appear optimistic under severe imbalance, while PR curves focus directly on positive-class detection quality.
+
+    \textbf{Limitation:} The paper is metric-focused and does not prescribe a complete fraud model architecture.
+
+    \item \textbf{Buda M, Maki A, and Mazurowski MA (2018) \cite{ref10}}
+
+    Studied class imbalance effects in neural network training.
+
+    \textbf{Relevance:} SecureEdgeNet uses an MLP with class-weighted binary cross entropy to reduce majority-class domination.
+
+    \textbf{Findings:} Deep neural networks are sensitive to class imbalance, and weighting or sampling choices affect minority-class performance.
+
+    \textbf{Limitation:} The experiments focus on convolutional networks rather than federated tabular fraud detection.
+
+    \item \textbf{Chen T and Guestrin C (2016) \cite{ref11}}
+
+    Introduced XGBoost, a scalable gradient tree boosting system with regularization and efficient approximate split finding.
+
+    \textbf{Relevance:} SecureEdgeNet uses XGBoost because gradient-boosted trees are highly effective for structured tabular fraud data.
+
+    \textbf{Findings:} XGBoost achieved high performance and scalability through sparsity-aware split finding, regularization, and system-level optimization.
+
+    \textbf{Limitation:} Standard XGBoost is centralized and does not directly support FedAvg-style parameter averaging.
+
+    \item \textbf{McMahan B, Moore E, Ramage D, Hampson S, and Ag\"uera y Arcas B (2017) \cite{ref12}}
+
+    Proposed communication-efficient learning of deep networks from decentralized data and popularized Federated Averaging.
+
+    \textbf{Relevance:} This is the core algorithmic basis for SecureEdgeNet's federated Logistic Regression and MLP aggregation.
+
+    \textbf{Findings:} FedAvg can reduce communication by allowing clients to perform multiple local updates before server aggregation.
+
+    \textbf{Limitation:} FedAvg can struggle under highly non-IID client data and does not solve privacy leakage by itself.
+
+    \item \textbf{Kone\v{c}n\'y J, McMahan HB, Yu FX, Richt\'arik P, Suresh AT, and Bacon D (2016) \cite{ref13}}
+
+    Studied strategies for improving communication efficiency in Federated Learning.
+
+    \textbf{Relevance:} Communication cost is an important design constraint in federated fraud systems with many institutions.
+
+    \textbf{Findings:} Structured and sketched updates can reduce communication substantially while preserving learning utility.
+
+    \textbf{Limitation:} SecureEdgeNet currently uses direct parameter exchange and does not implement update compression.
+
+    \item \textbf{Kairouz P et al. (2021) \cite{ref14}}
+
+    Presented a broad survey of advances and open problems in Federated Learning.
+
+    \textbf{Relevance:} This work frames the project's design decisions around privacy, heterogeneity, communication, and evaluation.
+
+    \textbf{Findings:} Federated Learning faces open challenges in privacy, optimization, personalization, incentives, and system deployment.
+
+    \textbf{Limitation:} The work is a survey and does not provide a project-specific implementation.
+
+    \item \textbf{Yang Q, Liu Y, Chen T, and Tong Y (2019) \cite{ref15}}
+
+    Defined Federated Machine Learning concepts and categorized horizontal, vertical, and transfer federated learning.
+
+    \textbf{Relevance:} SecureEdgeNet follows a horizontal FL simulation where clients share feature schema but own different transaction rows.
+
+    \textbf{Findings:} FL enables collaborative modelling across organizations with reduced data sharing.
+
+    \textbf{Limitation:} The paper is conceptual and does not focus specifically on fraud detection.
+
+    \item \textbf{Bonawitz K et al. (2019) \cite{ref16}}
+
+    Described a large-scale production system design for Federated Learning.
+
+    \textbf{Relevance:} This informs SecureEdgeNet's separation of client logic, server strategy, rounds, participation, and aggregation.
+
+    \textbf{Findings:} Production FL requires client scheduling, fault tolerance, secure aggregation, and scalable orchestration.
+
+    \textbf{Limitation:} The full production system is infrastructure-heavy, whereas SecureEdgeNet intentionally remains Colab-compatible.
+
+    \item \textbf{Li T, Sahu AK, Zaheer M, Sanjabi M, Talwalkar A, and Smith V (2020) \cite{ref17}}
+
+    Proposed FedProx for federated optimization under systems and statistical heterogeneity.
+
+    \textbf{Relevance:} Fraud clients may be non-IID because banks differ in customer base, geography, and fraud patterns.
+
+    \textbf{Findings:} A proximal term can improve stability when client updates drift from the global objective.
+
+    \textbf{Limitation:} SecureEdgeNet currently implements FedAvg and not FedProx.
+
+    \item \textbf{Bonawitz K, Ivanov V, Kreuter B, Marcedone A, McMahan HB, Patel S, Ramage D, Segal A, and Seth K (2017) \cite{ref18}}
+
+    Proposed a practical secure aggregation protocol for privacy-preserving machine learning.
+
+    \textbf{Relevance:} Secure aggregation is a natural next step for hiding individual client model updates in SecureEdgeNet.
+
+    \textbf{Findings:} The protocol allows a server to compute the sum of client vectors without observing individual vectors.
+
+    \textbf{Limitation:} SecureEdgeNet discusses but does not implement cryptographic secure aggregation.
+
+    \item \textbf{Geyer RC, Klein T, and Nabi M (2017) \cite{ref19}}
+
+    Studied client-level differential privacy for Federated Learning.
+
+    \textbf{Relevance:} Financial institutions may require formal privacy protection beyond raw-data locality.
+
+    \textbf{Findings:} Client-level differential privacy can reduce leakage from model updates, with a tradeoff between privacy and accuracy.
+
+    \textbf{Limitation:} Differential privacy noise is not implemented in the current project.
+
+    \item \textbf{Zhu L, Liu Z, and Han S (2019) \cite{ref20}}
+
+    Demonstrated deep leakage from gradients, showing that training data can sometimes be reconstructed from gradients.
+
+    \textbf{Relevance:} This work explains why Federated Learning alone is not sufficient for full privacy guarantees.
+
+    \textbf{Findings:} Gradients can leak sensitive information under certain conditions, especially when updates are fine-grained.
+
+    \textbf{Limitation:} The attack setting is not identical to all FL deployments, but it motivates stronger privacy mechanisms.
+
+    \item \textbf{Bagdasaryan E, Veit A, Hua Y, Estrin D, and Shmatikov V (2020) \cite{ref21}}
+
+    Investigated backdoor attacks against Federated Learning.
+
+    \textbf{Relevance:} Fraud systems are adversarial, and malicious clients could attempt to poison global models.
+
+    \textbf{Findings:} Federated aggregation can be vulnerable to targeted model poisoning if updates are not monitored.
+
+    \textbf{Limitation:} SecureEdgeNet does not currently implement robust aggregation or poisoning detection.
+
+    \item \textbf{Liu Y, Kang Y, Xing C, Chen T, and Yang Q (2020) \cite{ref22}}
+
+    Proposed a secure federated transfer learning framework for collaboration between parties with limited overlap.
+
+    \textbf{Relevance:} It is relevant to financial organizations that may have different feature spaces or partially overlapping customers.
+
+    \textbf{Findings:} Secure computation and transfer learning can enable privacy-preserving collaboration when data schemas differ.
+
+    \textbf{Limitation:} SecureEdgeNet assumes a shared fraud feature schema and does not implement transfer FL.
+
+    \item \textbf{Le NK, Liu Y, Nguyen QM, Liu Q, Liu F, Cai Q, and Hirche S (2021) \cite{ref23}}
+
+    Proposed privacy-preserving XGBoost protocols for Federated Learning.
+
+    \textbf{Relevance:} This work directly relates to the project decision to keep XGBoost local rather than applying naive parameter averaging.
+
+    \textbf{Findings:} Federated XGBoost requires specialized secure protocols because tree structures and split statistics cannot be averaged like neural weights.
+
+    \textbf{Limitation:} These protocols are heavier than the current Colab-friendly implementation.
+
+    \item \textbf{Lundberg SM and Lee SI (2017) \cite{ref24}}
+
+    Introduced SHAP, a unified framework for interpreting model predictions.
+
+    \textbf{Relevance:} SecureEdgeNet uses SHAP summaries for XGBoost explainability.
+
+    \textbf{Findings:} SHAP provides additive feature attributions based on Shapley values and supports consistent local explanations.
+
+    \textbf{Limitation:} SHAP can be computationally expensive for large datasets or complex ensembles.
+
+    \item \textbf{Ribeiro MT, Singh S, and Guestrin C (2016) \cite{ref25}}
+
+    Proposed LIME for explaining predictions of black-box classifiers.
+
+    \textbf{Relevance:} The paper supports the broader explainable AI requirement in high-stakes financial fraud systems.
+
+    \textbf{Findings:} Local surrogate explanations can help users understand and trust individual predictions.
+
+    \textbf{Limitation:} LIME explanations may vary with perturbation strategy and are not currently implemented in SecureEdgeNet.
+\end{enumerate}
+
+\section{Conclusion of Survey}
+The surveyed literature confirms that effective fraud detection requires more than a high-accuracy classifier. The problem demands imbalance-aware metrics, probability calibration, interpretable outputs, robust tabular models, and sensitivity to privacy constraints. Federated Learning provides a principled framework for cross-institution collaboration without raw data centralization, but it introduces challenges such as client heterogeneity, gradient leakage. SecureEdgeNet combines these lessons by using FedAvg for aggregatable models, ensemble scoring for robustness, and SHAP-based explainability for model transparency.

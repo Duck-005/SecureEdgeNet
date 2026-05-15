@@ -1,0 +1,53 @@
+\chapter{INTRODUCTION}
+\section{General Introduction}
+Credit card fraud detection is a high-impact binary classification problem in which a model must decide whether a transaction is legitimate or fraudulent. The task is difficult because fraudulent transactions are rare, fraud behaviour changes over time, and financial transaction records are highly sensitive. A centralized machine learning system can improve predictive power by collecting transaction data from many institutions, but this creates privacy, compliance, and data ownership risks. The project presented in this report, \textbf{SecureEdgeNet}, implements a lightweight Federated Learning based fraud detection system. In Federated Learning, model training is distributed across clients while raw data remains local. Each client represents a simulated bank or payment institution. The clients train local models on their own data partitions and send only model parameters or model outputs to the coordinating server. The server performs global aggregation and updates the shared model state.
+
+
+The system combines three model families: Logistic Regression, Multi-Layer Perceptron (MLP), and XGBoost. Logistic Regression provides a fast and interpretable linear baseline. The MLP learns nonlinear interactions among transaction features. XGBoost provides strong performance on structured tabular data. Their probability outputs are combined through a weighted ensemble to produce the final fraud risk score. The project is intentionally designed for research and demonstration environments such as Google Colab. It avoids heavy distributed infrastructure and uses a single-runtime simulation to demonstrate privacy-preserving distributed model training. The clients train local models on their own data partitions and send only model parameters or model outputs to the coordinating server.
+
+\section{Problem Statement}
+Financial institutions often maintain separate transaction databases and cannot freely share raw customer records because of privacy regulations, competitive boundaries, security concerns, and operational policies. At the same time, fraud patterns may be distributed across institutions. A model trained on one institution's data may not generalize to another institution's customers, merchants, and transaction behaviour.
+
+The problem is to design and implement a modular system that can collaboratively train fraud detection models across multiple simulated clients while satisfying the following constraints:
+
+\begin{itemize}
+    \item Raw transaction data must remain local to each client.
+    \item The server should coordinate training using Federated Learning.
+    \item The system should handle highly imbalanced fraud labels.
+    \item The final fraud detector should combine multiple model families.
+    \item Evaluation should prioritize fraud-focused metrics such as recall, F1-score, ROC-AUC, and PR-AUC.
+    \item The implementation should run in notebook-friendly environments without complex infrastructure.
+\end{itemize}
+
+\section{ Objectives of the project}
+\begin{enumerate}
+    \item To build a complete Federated Learning pipeline using Flower for credit card fraud detection.
+    \item To simulate multiple clients locally, where each client trains on a private partition of the dataset.
+    \item To implement federated Logistic Regression and MLP training using Federated Averaging.
+    \item To train client-local XGBoost models for high-performance tabular fraud detection.
+    \item To combine model probabilities using configurable ensemble aggregation.
+    \item To implement preprocessing, class imbalance handling, threshold tuning, evaluation, visualization, and checkpointing.
+    \item To make the system reproducible and executable in Google Colab or a local Python environment.
+\end{enumerate}
+
+
+\section{Project deliverables}
+\begin{itemize}
+    \item A production-structured Python project with modular folders for clients, server, models, training, evaluation, ensemble, API, configuration, and documentation.
+    \item A Flower based federated training workflow and a local \texttt{--no-flower} fallback for faster Colab execution.
+    \item Logistic Regression, MLP, and XGBoost model implementations.
+    \item A weighted ensemble fraud scoring module.
+    \item Evaluation reports including ROC curve, PR curve, confusion matrix, and XGBoost feature importance.
+    \item Saved model checkpoints for inference.
+    \item FastAPI endpoint for fraud prediction.
+    \item Detailed documentation and explanation of the system architecture.
+\end{itemize}
+
+\section{Current Scope}
+The current project supports CSV fraud datasets stored in the \texttt{data/} directory. The implemented pipeline automatically detects common fraud label names such as \texttt{Class}, validates binary labels, preprocesses numeric and categorical features, partitions the dataset across clients, trains models, evaluates the ensemble, and saves checkpoints.
+
+The current Federated Learning aggregation applies to Logistic Regression and MLP parameters. XGBoost is trained locally on each client and contributes through probability-level ensemble averaging. This design is practical because tree structures cannot be directly averaged in the same way as continuous neural network or linear model parameters.
+
+
+\section{Future Scope}
+Future versions can extend the system with secure aggregation, differential privacy, true federated tree boosting, concept drift detection, graph neural networks for fraud rings, transformer-based transaction sequence modelling, adaptive ensemble weighting, and production-grade authentication for the inference API.

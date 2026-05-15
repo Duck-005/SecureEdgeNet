@@ -1,0 +1,140 @@
+\chapter{RESULTS}
+\section{Result Snapshots}      
+%(Every Result Snapshot should have Explanation)
+%sample image
+%upload screenshot as png sample code is given
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.82\textwidth]{roc_curve.png}
+    \caption{ROC Curve}
+    \label{fig:roc_curve}
+\end{figure}
+Figure \ref{fig:roc_curve} shows the receiver operating characteristic curve of the final ensemble. The ROC-AUC obtained by the system is 0.9708, indicating strong ranking ability between fraudulent and legitimate transactions. However, because fraud data is highly imbalanced, ROC-AUC is interpreted together with PR-AUC.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.82\textwidth]{pr_curve.png}
+    \caption{Precision-Recall Curve}
+    \label{fig:pr_curve}
+\end{figure}
+Figure \ref{fig:pr_curve} shows the precision-recall curve. This plot is highly relevant for fraud detection because it focuses on the minority fraud class. The project achieved a PR-AUC of 0.8547, showing that the ensemble maintains a useful balance between detecting fraud and controlling false alarms.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\textwidth]{confusion_matrix.png}
+    \caption{Confusion Matrix}
+    \label{fig:confusion_matrix}
+\end{figure}
+
+\vspace{3mm}
+Figure \ref{fig:confusion_matrix} shows the confusion matrix on the held-out test split. The model correctly classified 56,837 legitimate transactions and detected 85 fraudulent transactions. It produced 27 false positives and 13 false negatives. The false negatives are important because they represent fraud cases that were missed by the model.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{xgboost_feature_importance.png}
+    \caption{XGBoost Feature Importance}
+    \label{fig:xgb_feature_importance}
+\end{figure}
+Figure \ref{fig:xgb_feature_importance} shows the most important features learned by the client-local XGBoost models. These importances help analysts understand which transaction attributes contributed most strongly to the tree-based fraud decisions.
+
+\section{Comparative Analysis}
+% results
+%tables
+%comparison with existent methods
+\begin{table}[H]
+\centering
+\caption{Final Ensemble Evaluation Metrics}
+\begin{tabular}{|p{5cm}|p{4cm}|}
+\hline
+\textbf{Metric} & \textbf{Value} \\
+\hline
+Accuracy & 0.9634  \\
+\hline
+Precision & 0.7589 \\
+\hline
+Recall & 0.8673 \\
+\hline
+F1-score & 0.8095 \\
+\hline
+ROC-AUC & 0.9708 \\
+\hline
+PR-AUC & 0.8547 \\
+\hline
+Threshold & 0.6650 \\
+\hline
+\end{tabular}
+\end{table}
+
+The high accuracy must be interpreted carefully because the dataset is extremely imbalanced. The more meaningful fraud metrics are recall, F1-score, and PR-AUC. The recall value of 0.8673 indicates that the system detected approximately 86.73 percent of fraud cases in the held-out test set.
+
+\begin{table}[H]
+\centering
+\caption{Confusion Matrix Values}
+\begin{tabular}{|p{4cm}|p{4cm}|}
+\hline
+\textbf{Entry} & \textbf{Count} \\
+\hline
+True Negatives & 56837 \\
+\hline
+False Positives & 27 \\
+\hline
+False Negatives & 13 \\
+\hline
+True Positives & 85 \\
+\hline
+\end{tabular}
+\end{table}
+
+The total number of evaluated samples is 56,962 because the confusion matrix is computed on the 20 percent held-out test split, not on the full dataset of approximately 284,807 rows.
+
+\section{Performance Analysis}
+%– graphs, tables 
+\begin{table}[H]
+\centering
+\caption{Three-Fold Cross-Validation Summary}
+\begin{tabular}{|p{4cm}|p{4cm}|p{4cm}|}
+\hline
+\textbf{Metric} & \textbf{Mean} & \textbf{Standard Deviation} \\
+\hline
+Accuracy & 0.9634 & 0.0001 \\
+\hline
+Precision & 0.8807 & 0.0389 \\
+\hline
+Recall & 0.7764 & 0.0350 \\
+\hline
+F1-score & 0.8241 & 0.0195 \\
+\hline
+ROC-AUC & 0.9667 & 0.0086 \\
+\hline
+PR-AUC & 0.8291 & 0.0196 \\
+\hline
+Threshold & 0.8267 & 0.0980 \\
+\hline
+\end{tabular}
+\end{table}
+
+The cross-validation results demonstrate that the model is stable across folds. The F1-score mean of 0.8241 and PR-AUC mean of 0.8291 indicate that the ensemble generalizes well under stratified fold evaluation. The variation in tuned thresholds shows that fraud decision boundaries can shift depending on the validation distribution.
+
+\begin{table}[H]
+\centering
+\caption{Model Component Roles}
+\begin{tabular}{|p{4cm}|p{9cm}|}
+\hline
+\textbf{Model} & \textbf{Role in the Ensemble} \\
+\hline
+Logistic Regression & Provides a stable and interpretable linear fraud probability. \\
+\hline
+MLP & Captures nonlinear feature interactions through hidden layers. \\
+\hline
+XGBoost & Provides strong tabular decision rules and feature importance. \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Applications}
+% proposed project
+The proposed system can be applied in banking, card networks, digital payment systems, FinTech platforms, e-commerce fraud monitoring, and cybersecurity demonstrations. It is especially useful when multiple institutions want to collaborate on fraud intelligence without sharing raw transaction records.
+
+\subsection{Limitations}
+% proposed project 
+The current implementation uses local simulation rather than real distributed deployment. Secure aggregation and differential privacy are discussed but not implemented. XGBoost is trained locally and ensembled by probability averaging rather than true federated tree boosting. The model also depends on the quality of available transaction features and may require retraining under concept drift.

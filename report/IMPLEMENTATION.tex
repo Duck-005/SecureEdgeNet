@@ -1,0 +1,110 @@
+\chapter{IMPLEMENTATION}
+\section{Pseudocode}
+% or Algorithm for the proposed work
+\begin{algorithm}[H]
+\caption{Federated Ensemble Fraud Detection Training}
+\begin{algorithmic}[1]
+\State Load CSV dataset from \texttt{data/}
+\State Detect fraud label column and validate binary labels
+\State Split data into training and testing sets
+\State Fit preprocessing pipeline on training data
+\State Transform training and testing features
+\State Partition transformed training data into $K$ clients
+\State Initialize global Logistic Regression and MLP parameters
+\For{each federated round $r = 1$ to $R$}
+    \For{each selected client $k$}
+        \State Send global LR and MLP parameters to client $k$
+        \State Train LR and MLP locally on client data
+        \State Return updated parameters and local sample count $n_k$
+    \EndFor
+    \State Aggregate LR and MLP parameters using weighted FedAvg
+\EndFor
+\For{each client $k$}
+    \State Train local XGBoost model on client data
+\EndFor
+\State Compute LR, MLP, and averaged XGBoost probabilities
+\State Combine probabilities using weighted ensemble
+\State Tune threshold on validation data
+\State Evaluate on test data
+\State Save models, metrics, plots, and metadata
+\end{algorithmic}
+\end{algorithm}
+
+\section{Implementation Details}  %Algorithm and how it is being implemented}
+%Information about the implementation of Modules			
+\subsection{Data Loading and Preprocessing}
+The module \texttt{training/data\_loader.py} loads the first CSV file found in the \texttt{data/} directory. The preprocessing module validates the label, separates features from labels, imputes missing values, scales numeric features, and one-hot encodes categorical features when present.
+
+\begin{lstlisting}[language=Python, caption={Dataset Preparation Entry Point}]
+client_partitions, test, preprocessor, feature_names, dataset_path = prepare_data(config)
+\end{lstlisting}
+
+The fitted preprocessor is saved using \texttt{joblib}, ensuring that inference uses the same transformations as training.
+
+\subsection{Federated Client Implementation}
+Each client is implemented as a Flower-compatible NumPy client. It receives global parameters, loads them into local models, trains on local data, and returns updated parameters.
+
+\begin{lstlisting}[language=Python, caption={Client Fit Method Summary}]
+def fit(self, parameters, config):
+    self.set_parameters(parameters)
+    self.logistic.fit(X, y, epochs=epochs)
+    losses = self.mlp.fit(X, y, epochs=epochs, batch_size=batch_size)
+    return self.get_parameters(), len(y), metrics
+\end{lstlisting}
+
+Only model parameters and metrics are returned. Raw rows are not sent to the server.
+
+\subsection{Logistic Regression}
+The Logistic Regression model uses stochastic gradient updates through scikit-learn's \texttt{SGDClassifier}. Its parameters are:
+\begin{equation}
+\theta_{LR} = \{w, b\}
+\end{equation}
+where $w$ is the coefficient vector and $b$ is the intercept. The fraud probability is:
+\begin{equation}
+P(y=1|x) = \sigma(w^Tx + b)
+\end{equation}
+
+\subsection{MLP}
+The MLP is implemented in PyTorch with configurable hidden layers. The current configuration uses two hidden layers with 64 and 32 neurons and dropout of 0.2. The forward pass is:
+\begin{equation}
+h_1 = ReLU(W_1x+b_1), \quad h_2 = ReLU(W_2h_1+b_2), \quad z = W_3h_2+b_3
+\end{equation}
+and the output probability is $\sigma(z)$.
+
+\subsection{XGBoost}
+Each client trains its own XGBoost model locally. Since tree structures cannot be averaged like neural network weights, the system averages XGBoost probability predictions rather than parameters.
+
+\begin{lstlisting}[language=Python, caption={Averaging Client XGBoost Predictions}]
+scores = [model.predict_proba(X) for model in xgb_models]
+xgb_scores = np.mean(np.vstack(scores), axis=0)
+\end{lstlisting}
+
+\subsection{Ensemble Aggregation}
+The final ensemble is implemented in \texttt{ensemble/aggregator.py}. The default configuration is:
+\begin{equation}
+s = 0.3s_{LR} + 0.3s_{MLP} + 0.4s_{XGB}
+\end{equation}
+The final decision is:
+\begin{equation}
+\hat{y} =
+\begin{cases}
+1, & s \geq \tau \\
+0, & s < \tau
+\end{cases}
+\end{equation}
+where $\tau$ is the tuned threshold.
+
+\subsection{Checkpointing}
+The following artifacts are saved:
+\begin{itemize}
+    \item \texttt{logistic\_regression.joblib}
+    \item \texttt{mlp.pth}
+    \item \texttt{xgboost\_client\_*.json}
+    \item \texttt{preprocessor.joblib}
+    \item \texttt{ensemble\_config.json}
+    \item \texttt{model\_metadata.json}
+    \item \texttt{metrics.json}
+\end{itemize}
+
+\subsection{Inference API}
+The FastAPI layer loads all checkpoints at startup and exposes \texttt{/predict}. The endpoint preprocesses incoming feature dictionaries, computes model scores, applies the ensemble, and returns the fraud probability and decision.

@@ -1,0 +1,142 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{cite}
+\usepackage{framed}
+\usepackage{a4wide}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{longtable}
+\usepackage{enumerate}
+\usepackage{afterpage}
+\usepackage{multirow}
+\usepackage{ragged2e}
+\usepackage{gensymb}
+\usepackage{pdfpages}
+\usepackage{amsfonts} 
+\usepackage[left=2 cm,top=2 cm,right=2 cm,bottom= 2cm]{geometry}
+\usepackage{array}
+\usepackage{setspace}           
+\usepackage{float}
+\usepackage{txfonts}
+\usepackage{lipsum}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{subfiles} % Best loaded last in the preamble
+\usepackage{adjustbox}
+\newcommand{\Usefont}[1]{\fontfamily{#1}\selectfont}
+\usepackage{lscape} % for landscape tables
+\renewcommand{\baselinestretch}{1.7} 
+\usepackage{array}
+\usepackage{blindtext}
+\usepackage{xpatch}
+\usepackage{url}
+\usepackage{leqno}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\linespread{1.5}
+\usepackage[intoc, english]{nomencl}
+\hyphenpenalty=5000
+\tolerance=1000
+\usepackage[nottoc]{tocbibind}
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{frame=tb,
+  language=C++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  }
+
+
+%********************************************************
+%*********************Figures*****************************
+% Save all figures in the folder figures and include them in your 
+% report using the command \includegraphics{figure-name}
+
+\graphicspath{{figures/}}
+
+
+\usepackage{lipsum}%% a garbage package you don't need except to create examples.
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{2025-2026}
+\rhead{ SecureEdgeNet}
+\lfoot{\small{Department of CSE}(\small{AI\&ML})}\cfoot{\hspace{7mm}Ramaiah Institute of Technology}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{2 pt}
+\renewcommand{\footrulewidth}{2 pt}
+
+
+\begin{document}
+\gdef \title{VISVESVARAYA TECHNOLOGICAL UNIVERSITY
+BELAGAVI-590018} % Seminar title
+%*******************************************************************
+% The font pages. The source tex files are there in the folder
+\include{coverpage} %Unless essential Do not edit this tex file
+
+
+
+%%********************Certificate*******************
+
+% To print name of only the seminar coordinator 1 in the certificate page
+\include{certificate1} 
+\include{declaration}
+% To print names of both the seminar coordinators in the certificate page
+%\include{certificate2} %Please uncomment this and comment the previous line
+
+%%***************************************************
+
+
+
+\pagenumbering{roman} 
+
+%%********************************Abstract***********************
+\include{acknowledgement} 
+\include{abstract} 
+
+\thispagestyle{empty}
+\newpage
+    
+%%**********************Table of Contents***********************
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+\listoffigures
+\listoftables
+\cleardoublepage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+%%********************Chapters**********
+\include{INTRODUCTION} 
+\include{LITERATURE SURVEY}
+\include{PROJECT REQUIREMENT SPECIFICATIONS}
+\include{DESIGN}
+\include{IMPLEMENTATION}
+\include{RESULTS}
+\include{CONCLUSION}
+
+%%********************References**********
+\include{reference}
+\end{document}

@@ -1,0 +1,79 @@
+\chapter{PROJECT REQUIREMENT SPECIFICATIONS}
+
+\section{Hardware Requirements}
+\begin{table}[H]
+\centering
+\caption{Hardware Requirements}
+\begin{tabular}{|p{4cm}|p{9cm}|}
+\hline
+\textbf{Component} & \textbf{Recommended Specification} \\
+\hline
+Processor & Multi-core CPU such as Intel i5/i7, AMD Ryzen, or Google Colab CPU runtime. \\
+\hline
+Memory & Minimum 8 GB RAM; 12 GB or higher recommended for the full Kaggle credit card fraud dataset. \\
+\hline
+Storage & Minimum 2 GB free space for dataset, checkpoints, plots, and report artifacts. \\
+\hline
+GPU & Optional. The MLP can use CUDA if available, but the project is designed to run on CPU. \\
+\hline
+Network & Required only for installing dependencies or using cloud notebook environments. Training itself is simulated locally. \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Software Requirements}
+\begin{table}[H]
+\centering
+\caption{Software Requirements}
+\begin{tabular}{|p{4cm}|p{9cm}|}
+\hline
+\textbf{Software} & \textbf{Purpose} \\
+\hline
+Python 3.10 or higher & Main implementation language. \\
+\hline
+Flower & Federated Learning client-server simulation and FedAvg strategy. \\
+\hline
+PyTorch & MLP implementation and neural network training. \\
+\hline
+scikit-learn & Logistic Regression, preprocessing, train-test split, metrics, and model utilities. \\
+\hline
+XGBoost & Client-local gradient boosted tree models. \\
+\hline
+pandas and NumPy & Dataset loading, tabular processing, numerical arrays. \\
+\hline
+matplotlib & ROC, PR, confusion matrix, and feature importance plots. \\
+\hline
+FastAPI and Uvicorn & Lightweight inference API. \\
+\hline
+SHAP & XGBoost explanation summaries. \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Functional Requirements}
+\begin{enumerate}
+    \item The system shall load CSV fraud datasets from the \texttt{data/} directory.
+    \item The system shall automatically detect or validate the fraud label column.
+    \item The system shall preprocess transaction features using imputation, scaling, and categorical encoding.
+    \item The system shall partition the training data into multiple simulated federated clients.
+    \item Each client shall train Logistic Regression and MLP models locally.
+    \item The server shall aggregate Logistic Regression and MLP parameters using weighted FedAvg.
+    \item Each client shall train a local XGBoost model for tabular fraud detection.
+    \item The final predictor shall combine Logistic Regression, MLP, and XGBoost probability outputs using configurable ensemble weights.
+    \item The system shall compute accuracy, precision, recall, F1-score, ROC-AUC, PR-AUC, and confusion matrix.
+    \item The system shall save trained models, preprocessing pipeline, ensemble configuration, metrics, and plots.
+    \item The API shall expose a \texttt{/predict} endpoint for real-time fraud scoring after training.
+\end{enumerate}
+
+\section{Non-Functional Requirements}
+\begin{itemize}
+    \item \textbf{Privacy:} Raw transaction data must remain inside client partitions during federated training.
+    \item \textbf{Reproducibility:} Configuration values and random seeds must control training behaviour.
+    \item \textbf{Modularity:} Data loading, models, clients, server, evaluation, and inference must be separated into reusable modules.
+    \item \textbf{Scalability:} Number of clients, rounds, local epochs, and ensemble weights must be configurable.
+    \item \textbf{Maintainability:} Code should use classes, type hints, checkpoint files, and clean project structure.
+    \item \textbf{Interpretability:} The system should provide feature importance, SHAP summaries, and model contribution scores.
+\end{itemize}
+
+
+

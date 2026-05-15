@@ -1,0 +1,60 @@
+\chapter{TESTING}
+\section{Introduction}     
+Testing in SecureEdgeNet focuses on correctness of the machine learning pipeline, data processing reliability, model artifact generation, and evaluation validity. Since the project handles financial fraud detection, plain accuracy is not sufficient. The testing process therefore emphasizes precision, recall, F1-score, ROC-AUC, PR-AUC, and confusion matrix behaviour.
+
+\section{Testing Tools and Environment}	    
+\begin{itemize}
+    \item \textbf{Python compilation:} Used to check syntax correctness across all source files.
+    \item \textbf{Google Colab runtime:} Used for notebook-friendly execution of the training pipeline.
+    \item \textbf{scikit-learn metrics:} Used for classification metrics, ROC-AUC, PR-AUC, and confusion matrix.
+    \item \textbf{matplotlib:} Used for visual verification of ROC, PR, confusion matrix, and feature importance plots.
+    \item \textbf{JSON checkpoints:} Used to verify saved metrics and model metadata.
+\end{itemize}
+
+\section{Test cases}
+\begin{table}[H]
+\centering
+\caption{Testing Scenarios}
+\begin{tabular}{|p{1cm}|p{4cm}|p{5cm}|p{3cm}|}
+\hline
+\textbf{ID} & \textbf{Test Case} & \textbf{Expected Result} & \textbf{Status} \\
+\hline
+T1 & Load CSV dataset from \texttt{data/} & Dataset is loaded and label column is detected as \texttt{Class}. & Passed \\
+\hline
+T2 & Validate binary fraud label & Labels contain only legitimate and fraud classes. & Passed \\
+\hline
+T3 & Preprocess numeric features & Missing values are handled and numeric values are scaled. & Passed \\
+\hline
+T4 & Partition clients & Training data is split across five simulated clients. & Passed \\
+\hline
+T5 & Run local FedAvg mode & LR and MLP parameters are aggregated without Flower simulation overhead. & Passed \\
+\hline
+T6 & Train local XGBoost models & Five client-local XGBoost checkpoints are generated. & Passed \\
+\hline
+T7 & Ensemble prediction & Weighted probability score is produced from LR, MLP, and XGBoost. & Passed \\
+\hline
+T8 & Generate plots & ROC, PR, confusion matrix, and feature importance plots are saved. & Passed \\
+\hline
+T9 & Save checkpoints & Model and metadata files are written to \texttt{checkpoints/}. & Passed \\
+\hline
+T10 & Cross-validation & Three-fold cross-validation summary is generated. & Passed \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Evaluation Formulae}
+The confusion matrix entries are true positives (TP), true negatives (TN), false positives (FP), and false negatives (FN). The main evaluation metrics are:
+\begin{equation}
+Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
+\end{equation}
+\begin{equation}
+Precision = \frac{TP}{TP + FP}
+\end{equation}
+\begin{equation}
+Recall = \frac{TP}{TP + FN}
+\end{equation}
+\begin{equation}
+F1 = \frac{2 \times Precision \times Recall}{Precision + Recall}
+\end{equation}
+
+For fraud detection, recall is especially important because a false negative means that a fraudulent transaction was not detected.
